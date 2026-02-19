@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intramurals</title>
+    
+    <link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css">
+    <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        body {
+            background-color: #f0f0f0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: white;
+            border: 1px solid #ccc;
+        }
+       
+        .header {
+            background-color: #333;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .nav button {
+            background-color: #666;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            margin-left: 5px;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+        .nav button.active {
+            background-color: #999;
+        }
+        .nav button:hover {
+            background-color: #777;
+        }
+      
+        .content {
+            padding: 25px;
+            min-height: 450px;
+        }
+        .page {
+            display: none;
+        }
+        .page.active {
+            display: block;
+        }
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #ccc;
+        }
+       
+        .signup-form {
+            max-width: 400px;
+            margin: 0 auto;
+            background-color: #f9f9f9;
+            padding: 25px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+        .btn {
+            background-color: #333;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        .btn:hover {
+            background-color: #555;
+        }
+        .success-message {
+            background-color: #dff0d8;
+            border: 1px solid #d6e9c6;
+            color: #3c763d;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 3px;
+            text-align: center;
+            display: none;
+        }
+       
+        .checker-form {
+            background-color: #f9f9f9;
+            padding: 25px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .question-box {
+            background-color: white;
+            padding: 20px;
+            margin-bottom: 15px;
+            border: 1px solid #eee;
+            border-radius: 3px;
+        }
+        .question-box label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 12px;
+        }
+        .radio-group {
+            display: flex;
+            gap: 25px;
+        }
+        .radio-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+        #resultBox {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            display: none;
+        }
+        .eligible {
+            background-color: #dff0d8;
+            border-color: #d6e9c6;
+        }
+        .not-eligible {
+            background-color: #f2dede;
+            border-color: #ebccd1;
+        }
+        .team-box {
+            font-size: 22px;
+            font-weight: bold;
+            padding: 12px;
+            margin: 10px 0;
+            text-align: center;
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+        .blue { background-color: #d9edf7; }
+        .red { background-color: #f2dede; }
+        .yellow { background-color: #fcf8e3; }
+        .green { background-color: #dff0d8; }
+
+        .players-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .player-card {
+            background-color: #f9f9f9;
+            padding: 12px 5px;
+            text-align: center;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            text-transform: capitalize;
+        }
+        .total-box {
+            background-color: #333;
+            color: white;
+            padding: 12px;
+            text-align: center;
+            border-radius: 3px;
+            margin-top: 15px;
+        }
+        .footer-note {
+            margin-top: 15px;
+            color: #666;
+            font-size: 14px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+  
+        <div class="header">
+            <div class="logo">INTRAMURALS 2026</div>
+            <div class="nav">
+                <button class="active" id="nav-signup">Sign Up</button>
+                <button id="nav-checker">Team Checker</button>
+                <button id="nav-players">Players</button>
+            </div>
+        </div>
+
+    
+        <div class="content">
+           
+            <div class="page active" id="page-signup">
+                <h2>SIGN UP</h2>
+                <div class="signup-form">
+                    <div class="form-group">
+                        <label>Username:</label>
+                        <input type="text" id="username" placeholder="Enter username">
+                    </div>
+                    <div class="form-group">
+                        <label>Password:</label>
+                        <input type="password" id="password" placeholder="Enter password">
+                    </div>
+                    <button class="btn" onclick="signUp()">SIGN UP</button>
+                    
+                    <div id="signup-success" class="success-message">
+                        ✓ Successfully signed up!
+                    </div>
+                </div>
+            </div>
+
+            
+            <div class="page" id="page-checker">
+                <h2>TEAM CHECKER</h2>
+                <div class="checker-form">
+                    <div class="question-box">
+                        <label>1. Done with online registration?</label>
+                        <div class="radio-group">
+                            <div class="radio-item">
+                                <input type="radio" id="reg-yes" name="registered" value="yes" checked>
+                                <label for="reg-yes">Yes</label>
+                            </div>
+                            <div class="radio-item">
+                                <input type="radio" id="reg-no" name="registered" value="no">
+                                <label for="reg-no">No</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question-box">
+                        <label>2. Have medical clearance?</label>
+                        <div class="radio-group">
+                            <div class="radio-item">
+                                <input type="radio" id="med-yes" name="medical" value="yes" checked>
+                                <label for="med-yes">Yes</label>
+                            </div>
+                            <div class="radio-item">
+                                <input type="radio" id="med-no" name="medical" value="no">
+                                <label for="med-no">No</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question-box">
+                        <label>3. Grade level:</label>
+                        <select id="grade">
+                            <option value="7">Grade 7</option>
+                            <option value="8">Grade 8</option>
+                            <option value="9">Grade 9</option>
+                            <option value="10" selected>Grade 10</option>
+                        </select>
+                    </div>
+
+                    <button class="btn" onclick="checkEligibility()">CHECK ELIGIBILITY</button>
+
+                    <div id="resultBox">
+                        <h3 id="result-title"></h3>
+                        <p id="result-message"></p>
+                        <div id="teamDisplay"></div>
+                        <div id="extra-info"></div>
+                    </div>
+                </div>
+            </div>
+
+            
+            <div class="page" id="page-players">
+                <h2>LIST OF PLAYERS</h2>
+                <p>Classmates joining intramurals:</p>
+                
+                
+                <div id="player-container" class="players-grid"></div>
+                
+                <div class="total-box" id="total-players"></div>
+                <div class="footer-note">(Player names)</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+       
+        const pages = {
+            signup: document.getElementById('page-signup'),
+            checker: document.getElementById('page-checker'),
+            players: document.getElementById('page-players')
+        };
+        
+        const navBtns = {
+            signup: document.getElementById('nav-signup'),
+            checker: document.getElementById('nav-checker'),
+            players: document.getElementById('nav-players')
+        };
+
+        function switchPage(page) {
+            pages.signup.classList.remove('active');
+            pages.checker.classList.remove('active');
+            pages.players.classList.remove('active');
+            pages[page].classList.add('active');
+            
+            navBtns.signup.classList.remove('active');
+            navBtns.checker.classList.remove('active');
+            navBtns.players.classList.remove('active');
+            navBtns[page].classList.add('active');
+        }
+
+        navBtns.signup.onclick = () => switchPage('signup');
+        navBtns.checker.onclick = () => switchPage('checker');
+        navBtns.players.onclick = () => switchPage('players');
+
+        
+        function signUp() {
+            let username = document.getElementById('username').value;
+            let password = document.getElementById('password').value;
+            
+            if (username === '' || password === '') {
+                alert('Please enter username and password');
+                return;
+            }
+            
+           
+            document.getElementById('signup-success').style.display = 'block';
+            
+            
+            setTimeout(function() {
+                document.getElementById('signup-success').style.display = 'none';
+                document.getElementById('username').value = '';
+                document.getElementById('password').value = '';
+            }, 2000);
+        }
+
+        
+        function checkEligibility() {
+            let reg = document.querySelector('input[name="registered"]:checked');
+            let med = document.querySelector('input[name="medical"]:checked');
+            let grade = document.getElementById('grade').value;
+            
+            if (!reg || !med || !grade) {
+                alert('Answer all questions');
+                return;
+            }
+            
+            let resultDiv = document.getElementById('resultBox');
+            let title = document.getElementById('result-title');
+            let msg = document.getElementById('result-message');
+            let teamDiv = document.getElementById('teamDisplay');
+            let extra = document.getElementById('extra-info');
+            
+            resultDiv.style.display = 'block';
+            teamDiv.innerHTML = '';
+            extra.innerHTML = '';
+            
+            if (reg.value == 'yes' && med.value == 'yes' && grade >= 7 && grade <= 10) {
+                resultDiv.className = 'eligible';
+                title.innerHTML = 'ELIGIBLE';
+                msg.innerHTML = 'You can join intramurals.';
+                
+                let team = '';
+                let teamClass = '';
+                
+                if (grade == '7') {
+                    team = 'BLUE BEARS';
+                    teamClass = 'blue';
+                } else if (grade == '8') {
+                    team = 'RED BULLDOGS';
+                    teamClass = 'red';
+                } else if (grade == '9') {
+                    team = 'YELLOW TIGERS';
+                    teamClass = 'yellow';
+                } else {
+                    team = 'GREEN HORNETS';
+                    teamClass = 'green';
+                }
+                
+                teamDiv.innerHTML = '<div class="team-box ' + teamClass + '">' + team + '</div>';
+                extra.innerHTML = '<p>Your team will contact you.</p>';
+            } else {
+                resultDiv.className = 'not-eligible';
+                title.innerHTML = 'NOT ELIGIBLE';
+                msg.innerHTML = 'You cannot join yet.';
+                
+                let reasons = '<ul style="margin-top:10px; padding-left:20px;">';
+                if (reg.value != 'yes') reasons += '<li>Register online</li>';
+                if (med.value != 'yes') reasons += '<li>Get medical clearance</li>';
+                if (grade < 7 || grade > 10) reasons += '<li>Must be grade 7-10</li>';
+                reasons += '</ul>';
+                
+                extra.innerHTML = reasons;
+            }
+        }
+
+       
+        window.signUp = signUp;
+        window.checkEligibility = checkEligibility;
+    </script>
+
+
+    <script type="py" src="main.py"></script>
+</body>
+</html>
